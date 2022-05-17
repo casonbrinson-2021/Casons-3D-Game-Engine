@@ -3,10 +3,13 @@ package com.casoncompany.engine;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
+import com.casoncompany.engine.renderer.Renderer;
+
 public class Main implements Runnable {
 	
+	private static final long NANOSECOND = 1000000000L;
 	private static final int UPDATES_PER_SECOND = 60;
-	private static final double NANOSECONDS_PER_UPDATE = 1000000000.0 / UPDATES_PER_SECOND;
+	private static final double NANOSECONDS_PER_UPDATE = NANOSECOND / (double) UPDATES_PER_SECOND;
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 600;
 	private static final String TITLE = "3D Game Engine";
@@ -15,6 +18,8 @@ public class Main implements Runnable {
 	private boolean running = false;
 	
 	private Window window;
+	private Renderer renderer;
+	
 	private GLFWErrorCallback errorCallback;
 		
 	public void start() {
@@ -31,68 +36,83 @@ public class Main implements Runnable {
 		
 		running = false;
 		
-		window.cleanup();
 		try {
-			thread.join();
+			cleanup();
 		} catch(Exception e) {
-			e.printStackTrace();
-			System.err.println("Error joining thread...");
-			System.exit(1);
+			System.err.println("Error cleaning up...");
+			System.exit(0);
 		}
+		System.out.println("Program terminated");
+
+	}
+	
+	public void cleanup() throws Exception{
+		window.cleanup();
+		renderer.cleanup();
+		errorCallback.free();
+		GLFW.glfwTerminate();
 	}
 	
 	public void init() {
 		System.out.println("Initializing game");
 		
-		window = new Window(WIDTH, HEIGHT, TITLE);
+		window = new Window(WIDTH, HEIGHT, TITLE, true);
 		window.init();
 		
 		errorCallback = GLFWErrorCallback.createPrint(System.err);
 		GLFW.glfwSetErrorCallback(errorCallback);
+		
+		renderer = new Renderer(window);
+		renderer.init();
 	}
 	
 	//draws the game to the screen
 	public void render() {
-		
+		renderer.render();
+		window.update();
 	}
 	
 	//updates the state of things in the game at a consistent rate of UPDATES_PER_SECOND
 	public void update() {
-		window.update();
+		renderer.update();
 	}
 	
-	//TODO fix this broke ass loop
 	public void loop() {
 		System.out.println("Starting game loop");
-//		long prevTime = System.nanoTime();
-//		long timer = System.currentTimeMillis();
-//		int frames = 0;
-//		double delta = 0.0;	//when delta hits a value of 1 (100%) then we should do an update
-//		
-//		
-//		while(running) {
-//			long currTime = System.nanoTime();
-//			delta += (currTime - prevTime) / NANOSECONDS_PER_UPDATE;
-//			prevTime = currTime;
-//			
-//			while(delta >= 1) {
-//				if(window.windowShouldClose())
-//					stop();
-//				
-//				update();
-//				delta = delta - 1.0;
-//			}
-//			
-//			render();
-//			frames++;
-//			
-//			//if a second has passed
-//			if((System.currentTimeMillis() - timer) > 1000) {
-//				timer+=1000;
-//				System.out.println(TITLE + " - " + frames + " fps");
-//				frames = 0;
-//			}
-//		}
+		
+		long prevTime = System.nanoTime();
+		long timer = System.currentTimeMillis();
+		int frames = 0;
+		double delta = 0;
+		int updates = 0;
+		
+		while(running) {
+			long currTime = System.nanoTime();
+			delta += (currTime - prevTime) / (double) NANOSECONDS_PER_UPDATE;
+			prevTime = currTime;
+			
+			while(delta >= 1) {
+				update();
+
+				delta--;
+				updates++;
+			}
+			
+			render();
+			
+			frames++;
+			
+			if(System.currentTimeMillis() - timer > 1000) {
+				timer+=1000;
+				//System.out.println(frames + " fps | " + updates + " update per second");
+				window.setTitle(TITLE + " | " + frames + " fps");
+				frames = 0;
+				updates = 0;
+			}
+			
+			if(window.windowShouldClose())
+				stop();
+		}	
 	}
 
 	@Override

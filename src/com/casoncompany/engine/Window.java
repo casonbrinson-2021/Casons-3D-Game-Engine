@@ -1,6 +1,5 @@
 package com.casoncompany.engine;
 
-import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -20,13 +19,15 @@ public class Window {
 	private int width;
 	private int height;
 	private String title;
+	private boolean vsync;
 	
 	private long window;
 	
-	public Window(int width, int height, String title) {
+	public Window(int width, int height, String title, boolean vsync) {
 		this.width = width;
 		this.height = height;
 		this.title = title;
+		this.vsync = vsync;
 		projectionMatrix = new Matrix4f();
 	}
 	
@@ -46,7 +47,10 @@ public class Window {
 		GLFW.glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
 		
 		GLFW.glfwMakeContextCurrent(window);
-		GLFW.glfwSwapInterval(1);	//vsync?
+		
+		if(vsync)
+			GLFW.glfwSwapInterval(1);
+		else GLFW.glfwSwapInterval(0);
 		
 		GLFW.glfwShowWindow(window);
 		GL.createCapabilities();
@@ -66,8 +70,16 @@ public class Window {
 		return GLFW.glfwWindowShouldClose(window);
 	}
 	
+	public boolean isKeyPressed(int keycode) {
+		return GLFW.glfwGetKey(window, keycode) == GLFW.GLFW_PRESS;
+	}
+	
 	public void setTitle(String title) {
 		GLFW.glfwSetWindowTitle(window, title);
+	}
+	
+	public void setClearColor(float color) {
+		GL11.glClearColor(color, color, color, 0.0f);
 	}
 	
 	public Matrix4f getProjectionMatrix() {
