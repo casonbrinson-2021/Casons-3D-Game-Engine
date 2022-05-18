@@ -21,6 +21,8 @@ public class Window {
 	private String title;
 	private boolean vsync;
 	
+	private boolean resize;
+	
 	private long window;
 	
 	public Window(int width, int height, String title, boolean vsync) {
@@ -39,12 +41,30 @@ public class Window {
 		GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE); 
 		GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE);
 		
+		boolean maximized = false;
+		if(width == 0 || height == 0) {
+			width = 100;
+			height = 100;
+			GLFW.glfwWindowHint(GLFW.GLFW_MAXIMIZED, GLFW.GLFW_TRUE);
+			maximized = true;
+		}
+		
 		window = GLFW.glfwCreateWindow(width, height, title, MemoryUtil.NULL, MemoryUtil.NULL);
 		if(window == MemoryUtil.NULL)
 			throw new RuntimeException("Failed to create the GLFW window");
 		
-		GLFWVidMode vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-		GLFW.glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
+		GLFW.glfwSetFramebufferSizeCallback(window, (window, width, height) -> {
+			this.width = width;
+			this.height = height;
+			this.setResize(true);
+		});
+		
+		if(maximized)
+			GLFW.glfwMaximizeWindow(window);
+		else {
+			GLFWVidMode vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+			GLFW.glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
+		}
 		
 		GLFW.glfwMakeContextCurrent(window);
 		
@@ -68,6 +88,14 @@ public class Window {
 	
 	public boolean windowShouldClose() {
 		return GLFW.glfwWindowShouldClose(window);
+	}
+	
+	public boolean isResize() {
+		return resize;
+	}
+	
+	public void setResize(boolean resize) {
+		this.resize = resize;
 	}
 	
 	public boolean isKeyPressed(int keycode) {
@@ -94,5 +122,13 @@ public class Window {
 	public Matrix4f updateProjectionMatrix(Matrix4f matrix, int width, int height) {
 		float aspectRatio = (float) width / height;
 		return matrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
 	}
 }

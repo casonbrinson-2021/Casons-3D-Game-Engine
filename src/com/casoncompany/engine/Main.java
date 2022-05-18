@@ -3,7 +3,10 @@ package com.casoncompany.engine;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
+import com.casoncompany.engine.input.InputController;
+import com.casoncompany.engine.renderer.GameLogic;
 import com.casoncompany.engine.renderer.Renderer;
+import com.casoncompany.engine.test.TestGame;
 
 public class Main implements Runnable {
 	
@@ -18,7 +21,7 @@ public class Main implements Runnable {
 	private boolean running = false;
 	
 	private Window window;
-	private Renderer renderer;
+	private GameLogic gameLogic;
 	
 	private GLFWErrorCallback errorCallback;
 		
@@ -48,7 +51,7 @@ public class Main implements Runnable {
 	
 	public void cleanup() throws Exception{
 		window.cleanup();
-		renderer.cleanup();
+		gameLogic.cleanup();
 		errorCallback.free();
 		GLFW.glfwTerminate();
 	}
@@ -62,19 +65,18 @@ public class Main implements Runnable {
 		errorCallback = GLFWErrorCallback.createPrint(System.err);
 		GLFW.glfwSetErrorCallback(errorCallback);
 		
-		renderer = new Renderer(window);
-		renderer.init();
+		gameLogic = new TestGame(window);	//this is where the game is set
+		gameLogic.init();
 	}
 	
-	//draws the game to the screen
 	public void render() {
-		renderer.render();
+		gameLogic.render();
 		window.update();
 	}
 	
 	//updates the state of things in the game at a consistent rate of UPDATES_PER_SECOND
 	public void update() {
-		renderer.update();
+		gameLogic.update();
 	}
 	
 	public void loop() {
