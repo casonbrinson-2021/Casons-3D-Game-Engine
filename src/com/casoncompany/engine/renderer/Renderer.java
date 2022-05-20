@@ -11,6 +11,7 @@ import com.casoncompany.engine.entity.Model;
 public class Renderer {
 	
 	private final Window window;
+	private Shader shader;
 	
 	//test
 	
@@ -18,8 +19,9 @@ public class Renderer {
 		this.window = window;
 	}
 	
-	public void init() {
-		
+	public void init() throws Exception {
+		shader = new Shader();
+		//shader.createVertexShader();
 	}
 	
 	public void update() {

@@ -29,7 +29,13 @@ public class TestGame implements GameLogic {
 	
 	@Override
 	public void init() {
-		renderer.init();
+		try {
+			renderer.init();
+		} catch(Exception e) {
+			System.err.println("Erorr initializing somehting in the test game");
+			e.printStackTrace();
+			System.exit(0);
+		}
 		
 		float[] vertices = {
 			-0.5f, 0.5f, 0f,
