@@ -46,7 +46,12 @@ public class TestGame implements GameLogic {
             -0.5f, 0.5f, 0f
 		};
 		
-		model = objectLoader.loadModel(vertices);
+		int[] indices = {
+			0,1,3,
+			3,1,2
+		};
+		
+		model = objectLoader.loadModel(vertices, indices);
 	}
 
 	@Override

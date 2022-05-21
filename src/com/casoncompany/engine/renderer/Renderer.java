@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL30;
 
 import com.casoncompany.engine.Window;
 import com.casoncompany.engine.entity.Model;
+import com.casoncompany.engine.utils.Utils;
 
 public class Renderer {
 	
@@ -21,7 +22,9 @@ public class Renderer {
 	
 	public void init() throws Exception {
 		shader = new Shader();
-		//shader.createVertexShader();
+		shader.createVertexShader(Utils.loadResource("/shader/vertex.vs"));
+		shader.createFragmentShader(Utils.loadResource("/shader/fragment.fs"));
+		shader.link();
 	}
 	
 	public void update() {
@@ -29,11 +32,13 @@ public class Renderer {
 	
 	public void render(Model model) {
 		clear();
+		shader.bind();
 		GL30.glBindVertexArray(model.getId());
 		GL20.glEnableVertexAttribArray(0);
 		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, model.getVertexCount());
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
+		shader.unbind();
 	}
 	
 	public void clear() {
@@ -41,7 +46,7 @@ public class Renderer {
 	}
 	
 	public void cleanup() {
-		
+		shader.cleanup();
 	}
 
 }
