@@ -12,11 +12,13 @@ import com.casoncompany.engine.input.InputController;
 import com.casoncompany.engine.renderer.GameLogic;
 import com.casoncompany.engine.renderer.Renderer;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class TestGame implements GameLogic {
 	
 	private static final float CAMERA_MOVE_SPEED = 0.05f;
+	private static final float MOUSE_SENSITIVITY = 0.2f;
 	
 	private final Window window;
 	private final Renderer renderer;
@@ -43,6 +45,7 @@ public class TestGame implements GameLogic {
 	public void init() {
 		try {
 			renderer.init();
+			inputController.init();
 		} catch(Exception e) {
 			System.err.println("Erorr initializing somehting in the test game");
 			e.printStackTrace();
@@ -120,6 +123,7 @@ public class TestGame implements GameLogic {
 	@Override
 	public void update() {
 		cameraInc.set(0,0,0);
+		inputController.update();
 		
 		if(inputController.getForward())
 			cameraInc.z = -1;
@@ -137,6 +141,11 @@ public class TestGame implements GameLogic {
 			cameraInc.y = -1;
 		
 		camera.movePosition(cameraInc.x * CAMERA_MOVE_SPEED, cameraInc.y * CAMERA_MOVE_SPEED, cameraInc.z * CAMERA_MOVE_SPEED);
+		
+		if(inputController.getLeftMouseButtonPress()) {
+			Vector2f rotateVector = inputController.getMouseDisplayVec();
+			camera.moveRotation(rotateVector.x * MOUSE_SENSITIVITY, rotateVector.y * MOUSE_SENSITIVITY, 0);
+		}
 		
 		entity.incrementRotation(0.0f, 0.5f, 0.0f);
 	}
