@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import com.casoncompany.engine.Window;
 import com.casoncompany.engine.entity.Model;
 import com.casoncompany.engine.entity.ObjectLoader;
+import com.casoncompany.engine.entity.Texture;
 import com.casoncompany.engine.input.InputController;
 import com.casoncompany.engine.renderer.GameLogic;
 import com.casoncompany.engine.renderer.Renderer;
@@ -38,12 +39,10 @@ public class TestGame implements GameLogic {
 		}
 		
 		float[] vertices = {
-			-0.5f, 0.5f, 0f,
-            -0.5f, -0.5f, 0f,
-            0.5f, -0.5f, 0f,
-            0.5f, -0.5f, 0f,
-            0.5f, 0.5f, 0f,
-            -0.5f, 0.5f, 0f
+			-0.5f,  0.5f, 0f,
+		    -0.5f, -0.5f, 0f,
+		     0.5f, -0.5f, 0f,
+		     0.5f,  0.5f, 0f
 		};
 		
 		int[] indices = {
@@ -51,7 +50,21 @@ public class TestGame implements GameLogic {
 			3,1,2
 		};
 		
-		model = objectLoader.loadModel(vertices, indices);
+		float[] textureCoords = {
+			0,0,
+			0,1,
+			1,1,
+			1,0
+		};
+		
+		try {
+			model = objectLoader.loadModel(vertices, textureCoords, indices);
+			model.setTexture(new Texture(objectLoader.loadTexture("textures/grassBlock.png")));
+		} catch (Exception e) {
+			System.err.println("Error with the textures");
+			e.printStackTrace();
+			System.exit(0);
+		}
 	}
 
 	@Override

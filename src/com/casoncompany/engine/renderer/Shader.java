@@ -1,16 +1,44 @@
 package com.casoncompany.engine.renderer;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.system.MemoryStack;
 
 public class Shader {
 
 	private final int programID;
 	private int vertexShaderID, fragmentShaderID;
 	
+	private final Map<String, Integer> uniforms;
+	
 	public Shader() throws Exception {
 		programID = GL20.glCreateProgram();
 		if(programID == 0)
 			throw new Exception("Could not create the shader");
+		
+		uniforms = new HashMap<>();
+	}
+	
+	public void createUniform(String uniformName) throws Exception {
+		int uniformLocation = GL20.glGetUniformLocation(programID, uniformName);
+		
+		if(uniformLocation < 0)
+			throw new Exception("Could not find uniform " + uniformName);
+		
+		uniforms.put(uniformName, uniformLocation);
+	}
+	
+	public void setUniform(String uniformName, Matrix4f value) {
+		try(MemoryStack stack = MemoryStack.stackPush()) {
+			GL20.glUniformMatrix4fv(uniforms.get(uniformName), false, value.get(stack.mallocFloat(16)));
+		}
+	}
+	
+	public void setUniform(String uniformName, int vlaue) {
+		GL20.glUniform1i(uniforms.get(uniformName), vlaue);
 	}
 	
 	public void createVertexShader(String shaderCode) throws Exception {
