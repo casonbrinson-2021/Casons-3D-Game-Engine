@@ -73,8 +73,13 @@ public class Window {
 		else GLFW.glfwSwapInterval(0);
 		
 		GLFW.glfwShowWindow(window);
+		
 		GL.createCapabilities();
-		GL11.glClearColor(1.0f, 0.0f, 0.0f, 0.0f);			
+		
+		GL11.glClearColor(1.0f, 0.0f, 0.0f, 0.0f);	
+		
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_STENCIL_TEST);
 	}
 	
 	public void update() {
@@ -106,8 +111,8 @@ public class Window {
 		GLFW.glfwSetWindowTitle(window, title);
 	}
 	
-	public void setClearColor(float color) {
-		GL11.glClearColor(color, color, color, 0.0f);
+	public void setClearColor(float r, float g, float b) {
+		GL11.glClearColor(r, g, b, 0.0f);
 	}
 	
 	public Matrix4f getProjectionMatrix() {

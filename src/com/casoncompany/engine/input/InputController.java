@@ -27,5 +27,13 @@ public class InputController {
 	public boolean getRight() {
 		return window.isKeyPressed(GLFW.GLFW_KEY_D);
 	}
+	
+	public boolean getUp() {
+		return window.isKeyPressed(GLFW.GLFW_KEY_SPACE);
+	}
+	
+	public boolean getDown() {
+		return window.isKeyPressed(GLFW.GLFW_KEY_LEFT_SHIFT);
+	}
 
 }
