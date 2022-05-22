@@ -12,6 +12,7 @@ import com.casoncompany.engine.entity.Texture;
 import com.casoncompany.engine.input.InputController;
 import com.casoncompany.engine.lighting.DirectionalLight;
 import com.casoncompany.engine.lighting.PointLight;
+import com.casoncompany.engine.lighting.SpotLight;
 import com.casoncompany.engine.renderer.GameLogic;
 import com.casoncompany.engine.renderer.Renderer;
 
@@ -37,6 +38,7 @@ public class TestGame implements GameLogic {
 	private float lightAngle;
 	private DirectionalLight directionalLight;
 	private PointLight pointLight;
+	private SpotLight spotLight;
 		
 	public TestGame(Window window) {
 		this.window = window;
@@ -62,14 +64,21 @@ public class TestGame implements GameLogic {
 		
 		entity = new Entity(model, new Vector3f(0,0,-5), new Vector3f(0,0,0), SCALE);
 
+		//point light
 		float lightIntensity = 1.0f;
 		Vector3f lightPosition = new Vector3f(0,0,-3.2f);
 		Vector3f lightColor = new Vector3f(1,1,1);
 		pointLight = new PointLight(lightColor, lightPosition, lightIntensity, 0, 0, 1);
 		
+		//spot light
+		Vector3f coneDir = new Vector3f(0,0,1);
+		float cutoff = (float) Math.cos(Math.toRadians(180));
+		spotLight = new SpotLight(new PointLight(lightColor, new Vector3f(0,0,1f), lightIntensity, 0, 0, 1), coneDir, cutoff);
+		
+		//directional light
 		lightPosition = new Vector3f(-1,-10,0);
 		lightColor = new Vector3f(1,1,1);
-		directionalLight = new DirectionalLight(lightColor, lightPosition, lightIntensity);
+		directionalLight = new DirectionalLight(lightColor, lightPosition, lightIntensity);		
 	}
 
 	@Override
@@ -109,6 +118,13 @@ public class TestGame implements GameLogic {
 		if(window.isKeyPressed(GLFW.GLFW_KEY_L))
 			pointLight.getPosition().y += 0.1f;
 		
+		//testing spot light
+		float lightPos = spotLight.getPointLight().getPosition().z;
+		if(window.isKeyPressed(GLFW.GLFW_KEY_N))
+			spotLight.getPointLight().getPosition().z = lightPos - 0.1f;
+		if(window.isKeyPressed(GLFW.GLFW_KEY_M))
+			spotLight.getPointLight().getPosition().z = lightPos + 0.1f;
+		
 		//entity.incrementRotation(0.0f, 0.25f, 0.0f);
 		
 		
@@ -142,7 +158,7 @@ public class TestGame implements GameLogic {
 			window.setResize(true);
 		}
 		
-		renderer.render(entity, camera, directionalLight, pointLight);
+		renderer.render(entity, camera, directionalLight, pointLight, spotLight);
 	}
 
 	@Override

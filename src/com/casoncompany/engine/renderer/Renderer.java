@@ -13,6 +13,7 @@ import com.casoncompany.engine.entity.Entity;
 import com.casoncompany.engine.entity.Model;
 import com.casoncompany.engine.lighting.DirectionalLight;
 import com.casoncompany.engine.lighting.PointLight;
+import com.casoncompany.engine.lighting.SpotLight;
 import com.casoncompany.engine.utils.Transformation;
 import com.casoncompany.engine.utils.Utils;
 
@@ -44,12 +45,13 @@ public class Renderer {
 		shader.createUniform("specularPower");
 		shader.createDirectionalLightUniform("directionalLight");
 		shader.createPointLightUniform("pointLight");
+		shader.createSpotLightUniform("spotLight");
 	}
 	
 	public void update() {
 	}
 	
-	public void render(Entity entity, Camera camera, DirectionalLight directionalLight, PointLight pointLight) {
+	public void render(Entity entity, Camera camera, DirectionalLight directionalLight, PointLight pointLight, SpotLight spotLight) {
 		clear();
 		
 		shader.bind();
@@ -63,6 +65,7 @@ public class Renderer {
 		shader.setUniform("specularPower", SPECULAR_POWER);
 		shader.setUniform("directionalLight", directionalLight);
 		shader.setUniform("pointLight", pointLight);
+		shader.setUniform("spotLight", spotLight);
 		
 		GL30.glBindVertexArray(entity.getModel().getId());
 		GL20.glEnableVertexAttribArray(0);
