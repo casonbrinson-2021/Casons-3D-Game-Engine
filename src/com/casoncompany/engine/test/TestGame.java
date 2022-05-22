@@ -18,7 +18,7 @@ import org.joml.Vector3f;
 public class TestGame implements GameLogic {
 	
 	private static final float CAMERA_MOVE_SPEED = 0.05f;
-	private static final float MOUSE_SENSITIVITY = 0.2f;
+	private static final float MOUSE_SENSITIVITY = 0.05f;
 	
 	private final Window window;
 	private final Renderer renderer;
@@ -52,65 +52,10 @@ public class TestGame implements GameLogic {
 			System.exit(0);
 		}
 		
-		float[] vertices = new float[] {
-	            -0.5f, 0.5f, 0.5f,
-	            -0.5f, -0.5f, 0.5f,
-	            0.5f, -0.5f, 0.5f,
-	            0.5f, 0.5f, 0.5f,
-	            -0.5f, 0.5f, -0.5f,
-	            0.5f, 0.5f, -0.5f,
-	            -0.5f, -0.5f, -0.5f,
-	            0.5f, -0.5f, -0.5f,
-	            -0.5f, 0.5f, -0.5f,
-	            0.5f, 0.5f, -0.5f,
-	            -0.5f, 0.5f, 0.5f,
-	            0.5f, 0.5f, 0.5f,
-	            0.5f, 0.5f, 0.5f,
-	            0.5f, -0.5f, 0.5f,
-	            -0.5f, 0.5f, 0.5f,
-	            -0.5f, -0.5f, 0.5f,
-	            -0.5f, -0.5f, -0.5f,
-	            0.5f, -0.5f, -0.5f,
-	            -0.5f, -0.5f, 0.5f,
-	            0.5f, -0.5f, 0.5f,
-		};
-		
-		float[] textureCoords = new float[]{
-				0.0f, 0.0f,
-	            0.0f, 0.5f,
-	            0.5f, 0.5f,
-	            0.5f, 0.0f,
-	            0.0f, 0.0f,
-	            0.5f, 0.0f,
-	            0.0f, 0.5f,
-	            0.5f, 0.5f,
-	            0.0f, 0.5f,
-	            0.5f, 0.5f,
-	            0.0f, 1.0f,
-	            0.5f, 1.0f,
-	            0.0f, 0.0f,
-	            0.0f, 0.5f,
-	            0.5f, 0.0f,
-	            0.5f, 0.5f,
-	            0.5f, 0.0f,
-	            1.0f, 0.0f,
-	            0.5f, 0.5f,
-	            1.0f, 0.5f,
-		};
-		
-		int[] indices = new int[]{
-	            0, 1, 3, 3, 1, 2,
-	            8, 10, 11, 9, 8, 11,
-	            12, 13, 7, 5, 12, 7,
-	            14, 15, 6, 4, 14, 6,
-	            16, 18, 19, 17, 16, 19,
-	            4, 6, 7, 5, 4, 7,
-		};
-		
 		Model model;
 		
 		try {
-			model = objectLoader.loadModel(vertices, textureCoords, indices);
+			model = objectLoader.loadOBJModel("/models/bunny.obj");
 			model.setTexture(new Texture(objectLoader.loadTexture("textures/grassBlock.png")));
 			entity = new Entity(model, new Vector3f(0,0,-5), new Vector3f(0,0,0), 1);
 		} catch (Exception e) {

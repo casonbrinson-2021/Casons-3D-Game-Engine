@@ -44,7 +44,7 @@ public class InputController {
 	}
 	
 	public void update() {
-		mouseInput.input();
+		mouseInput.update();
 	}
 	
 	public boolean getLeftMouseButtonPress() {

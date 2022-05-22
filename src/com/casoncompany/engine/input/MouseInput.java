@@ -40,7 +40,7 @@ public class MouseInput {
 		});
 	}
 	
-	public void input() {
+	public void update() {
 		displayVector.x = 0;
 		displayVector.y = 0;
 		
