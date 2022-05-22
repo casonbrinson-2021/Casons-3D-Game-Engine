@@ -19,6 +19,7 @@ public class TestGame implements GameLogic {
 	
 	private static final float CAMERA_MOVE_SPEED = 0.05f;
 	private static final float MOUSE_SENSITIVITY = 0.05f;
+	private static final float SCALE = 5.0f;
 	
 	private final Window window;
 	private final Renderer renderer;
@@ -56,8 +57,8 @@ public class TestGame implements GameLogic {
 		
 		try {
 			model = objectLoader.loadOBJModel("/models/bunny.obj");
-			model.setTexture(new Texture(objectLoader.loadTexture("textures/grassBlock.png")));
-			entity = new Entity(model, new Vector3f(0,0,-5), new Vector3f(0,0,0), 1);
+			model.setTexture(new Texture(objectLoader.loadTexture("textures/grassBlock.png")), 1f);
+			entity = new Entity(model, new Vector3f(0,0,-5), new Vector3f(0,0,0), SCALE);
 		} catch (Exception e) {
 			System.err.println("Error with the textures");
 			e.printStackTrace();
@@ -92,7 +93,7 @@ public class TestGame implements GameLogic {
 			camera.moveRotation(rotateVector.x * MOUSE_SENSITIVITY, rotateVector.y * MOUSE_SENSITIVITY, 0);
 		}
 		
-		entity.incrementRotation(0.0f, 0.5f, 0.0f);
+		entity.incrementRotation(0.0f, 0.25f, 0.0f);
 	}
 	
 	@Override
@@ -102,7 +103,6 @@ public class TestGame implements GameLogic {
 			window.setResize(true);
 		}
 		
-		window.setClearColor(0.0f, 0.0f, 0.0f);
 		renderer.render(entity, camera);
 	}
 
