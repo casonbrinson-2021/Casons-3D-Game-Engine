@@ -10,6 +10,8 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
 import com.casoncompany.engine.entity.Material;
+import com.casoncompany.engine.lighting.DirectionalLight;
+import com.casoncompany.engine.lighting.PointLight;
 
 public class Shader {
 
@@ -33,6 +35,21 @@ public class Shader {
 			throw new Exception("Could not find uniform " + uniformName);
 		
 		uniforms.put(uniformName, uniformLocation);
+	}
+	
+	public void createDirectionalLightUniform(String uniformName) throws Exception {
+		createUniform(uniformName + ".color");
+		createUniform(uniformName + ".direction");
+		createUniform(uniformName + ".intensity");
+	}
+	
+	public void createPointLightUniform(String uniformName) throws Exception {
+		createUniform(uniformName + ".color");
+		createUniform(uniformName + ".position");
+		createUniform(uniformName + ".intensity");
+		createUniform(uniformName + ".constant");
+		createUniform(uniformName + ".linear");
+		createUniform(uniformName + ".exponent");
 	}
 	
 	public void createMaterialUniform(String uniformName) throws Exception {
@@ -78,6 +95,21 @@ public class Shader {
 		setUniform(uniformName + ".specular", material.getSpecularColor());
 		setUniform(uniformName + ".hasTexture", material.hasTexture() ? 1 : 0);
 		setUniform(uniformName + ".reflectance", material.getReflectance());
+	}
+	
+	public void setUniform(String uniformName, DirectionalLight directionalLight) {
+		setUniform(uniformName + ".color", directionalLight.getColor());
+		setUniform(uniformName + ".direction", directionalLight.getDirection());
+		setUniform(uniformName + ".intensity", directionalLight.getIntensity());
+	}
+	
+	public void setUniform(String uniformName, PointLight pointLight) {
+		setUniform(uniformName + ".color", pointLight.getColor());
+		setUniform(uniformName + ".position", pointLight.getPosition());
+		setUniform(uniformName + ".intensity", pointLight.getIntensity());
+		setUniform(uniformName + ".constant", pointLight.getConstant());
+		setUniform(uniformName + ".linear", pointLight.getLinear());
+		setUniform(uniformName + ".exponent", pointLight.getExponent());
 	}
 	
 	public void createVertexShader(String shaderCode) throws Exception {

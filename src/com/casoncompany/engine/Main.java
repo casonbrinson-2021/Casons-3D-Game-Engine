@@ -66,7 +66,13 @@ public class Main implements Runnable {
 		GLFW.glfwSetErrorCallback(errorCallback);
 		
 		gameLogic = new TestGame(window);	//this is where the game is set
-		gameLogic.init();
+		try {
+			gameLogic.init();
+		} catch(Exception e) {
+			System.err.println("Error initializing test game");
+			e.printStackTrace();
+			System.exit(0);
+		}
 	}
 	
 	public void render() {

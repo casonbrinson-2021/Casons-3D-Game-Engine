@@ -11,12 +11,15 @@ import com.casoncompany.engine.Camera;
 import com.casoncompany.engine.Window;
 import com.casoncompany.engine.entity.Entity;
 import com.casoncompany.engine.entity.Model;
+import com.casoncompany.engine.lighting.DirectionalLight;
+import com.casoncompany.engine.lighting.PointLight;
 import com.casoncompany.engine.utils.Transformation;
 import com.casoncompany.engine.utils.Utils;
 
 public class Renderer {
 	
-	public static final Vector3f AMBIENT_LIGHT = new Vector3f(1.3f, 1.3f, 1.3f);
+	public static final Vector3f AMBIENT_LIGHT = new Vector3f(0.5f, 0.5f, 0.5f);
+	public static final float SPECULAR_POWER = 10.0f;
 	
 	private final Window window;
 	private Shader shader;
@@ -38,12 +41,15 @@ public class Renderer {
 		shader.createUniform("viewMatrix");
 		shader.createUniform("ambientLight");
 		shader.createMaterialUniform("material");
+		shader.createUniform("specularPower");
+		shader.createDirectionalLightUniform("directionalLight");
+		shader.createPointLightUniform("pointLight");
 	}
 	
 	public void update() {
 	}
 	
-	public void render(Entity entity, Camera camera) {
+	public void render(Entity entity, Camera camera, DirectionalLight directionalLight, PointLight pointLight) {
 		clear();
 		
 		shader.bind();
@@ -54,6 +60,9 @@ public class Renderer {
 		shader.setUniform("viewMatrix", Transformation.getViewMatrix(camera));
 		shader.setUniform("material", entity.getModel().getMaterial());
 		shader.setUniform("ambientLight", AMBIENT_LIGHT);
+		shader.setUniform("specularPower", SPECULAR_POWER);
+		shader.setUniform("directionalLight", directionalLight);
+		shader.setUniform("pointLight", pointLight);
 		
 		GL30.glBindVertexArray(entity.getModel().getId());
 		GL20.glEnableVertexAttribArray(0);

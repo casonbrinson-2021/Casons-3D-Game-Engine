@@ -1,5 +1,6 @@
 package com.casoncompany.engine.test;
 
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import com.casoncompany.engine.Camera;
@@ -9,6 +10,8 @@ import com.casoncompany.engine.entity.Model;
 import com.casoncompany.engine.entity.ObjectLoader;
 import com.casoncompany.engine.entity.Texture;
 import com.casoncompany.engine.input.InputController;
+import com.casoncompany.engine.lighting.DirectionalLight;
+import com.casoncompany.engine.lighting.PointLight;
 import com.casoncompany.engine.renderer.GameLogic;
 import com.casoncompany.engine.renderer.Renderer;
 
@@ -19,7 +22,7 @@ public class TestGame implements GameLogic {
 	
 	private static final float CAMERA_MOVE_SPEED = 0.05f;
 	private static final float MOUSE_SENSITIVITY = 0.05f;
-	private static final float SCALE = 5.0f;
+	private static final float SCALE = 20.0f;
 	
 	private final Window window;
 	private final Renderer renderer;
@@ -30,6 +33,10 @@ public class TestGame implements GameLogic {
 	private Camera camera;
 	
 	private Vector3f cameraInc;
+	
+	private float lightAngle;
+	private DirectionalLight directionalLight;
+	private PointLight pointLight;
 		
 	public TestGame(Window window) {
 		this.window = window;
@@ -40,30 +47,29 @@ public class TestGame implements GameLogic {
 		camera = new Camera();
 		
 		cameraInc = new Vector3f(0,0,0);
+		
+		lightAngle = -90;
 	}
 	
 	@Override
-	public void init() {
-		try {
-			renderer.init();
-			inputController.init();
-		} catch(Exception e) {
-			System.err.println("Erorr initializing somehting in the test game");
-			e.printStackTrace();
-			System.exit(0);
-		}
+	public void init() throws Exception {
+		renderer.init();
+		inputController.init();
 		
 		Model model;
+		model = objectLoader.loadOBJModel("/models/bunny.obj");
+		model.setTexture(new Texture(objectLoader.loadTexture("textures/grassBlock.png")), 1f);
 		
-		try {
-			model = objectLoader.loadOBJModel("/models/bunny.obj");
-			model.setTexture(new Texture(objectLoader.loadTexture("textures/grassBlock.png")), 1f);
-			entity = new Entity(model, new Vector3f(0,0,-5), new Vector3f(0,0,0), SCALE);
-		} catch (Exception e) {
-			System.err.println("Error with the textures");
-			e.printStackTrace();
-			System.exit(0);
-		}
+		entity = new Entity(model, new Vector3f(0,0,-5), new Vector3f(0,0,0), SCALE);
+
+		float lightIntensity = 1.0f;
+		Vector3f lightPosition = new Vector3f(0,0,-3.2f);
+		Vector3f lightColor = new Vector3f(1,1,1);
+		pointLight = new PointLight(lightColor, lightPosition, lightIntensity, 0, 0, 1);
+		
+		lightPosition = new Vector3f(-1,-10,0);
+		lightColor = new Vector3f(1,1,1);
+		directionalLight = new DirectionalLight(lightColor, lightPosition, lightIntensity);
 	}
 
 	@Override
@@ -93,7 +99,40 @@ public class TestGame implements GameLogic {
 			camera.moveRotation(rotateVector.x * MOUSE_SENSITIVITY, rotateVector.y * MOUSE_SENSITIVITY, 0);
 		}
 		
-		entity.incrementRotation(0.0f, 0.25f, 0.0f);
+		//testing point light
+		if(window.isKeyPressed(GLFW.GLFW_KEY_O))
+			pointLight.getPosition().x -= 0.1f;
+		if(window.isKeyPressed(GLFW.GLFW_KEY_P))
+			pointLight.getPosition().x += 0.1f;
+		if(window.isKeyPressed(GLFW.GLFW_KEY_K))
+			pointLight.getPosition().y -= 0.1f;
+		if(window.isKeyPressed(GLFW.GLFW_KEY_L))
+			pointLight.getPosition().y += 0.1f;
+		
+		//entity.incrementRotation(0.0f, 0.25f, 0.0f);
+		
+		
+		//random day night cycle using directional light
+		lightAngle+=1.05f;
+		if(lightAngle > 90) {
+			directionalLight.setIntensity(0);
+			
+			if(lightAngle >= 360)
+				lightAngle = -90;
+		} else if(lightAngle <= -80 || lightAngle >= 80) {
+			float factor = 1 - (Math.abs(lightAngle) - 80) / 10.0f;
+			directionalLight.setIntensity(factor);
+			directionalLight.getColor().y = Math.max(factor, 0.9f);
+			directionalLight.getColor().z = Math.max(factor, 0.5f);
+		} else {
+			directionalLight.setIntensity(1);
+			directionalLight.getColor().x = 1;
+			directionalLight.getColor().y = 1;
+			directionalLight.getColor().z = 1;
+		}
+		double angRad = Math.toRadians(lightAngle);
+		directionalLight.getDirection().x = (float) Math.sin(angRad);
+		directionalLight.getDirection().y = (float) Math.cos(angRad);
 	}
 	
 	@Override
@@ -103,7 +142,7 @@ public class TestGame implements GameLogic {
 			window.setResize(true);
 		}
 		
-		renderer.render(entity, camera);
+		renderer.render(entity, camera, directionalLight, pointLight);
 	}
 
 	@Override
