@@ -23,7 +23,7 @@ public class TestGame implements GameLogic {
 	
 	private static final float CAMERA_MOVE_SPEED = 0.05f;
 	private static final float MOUSE_SENSITIVITY = 0.05f;
-	private static final float SCALE = 20.0f;
+	private static final float SCALE = 10.0f;
 	
 	private final Window window;
 	private final Renderer renderer;
@@ -36,9 +36,10 @@ public class TestGame implements GameLogic {
 	private Vector3f cameraInc;
 	
 	private float lightAngle;
+	private float spotAngle;
 	private DirectionalLight directionalLight;
-	private PointLight pointLight;
-	private SpotLight spotLight;
+	private PointLight[] pointLights;
+	private SpotLight[] spotLights;
 		
 	public TestGame(Window window) {
 		this.window = window;
@@ -62,23 +63,28 @@ public class TestGame implements GameLogic {
 		model = objectLoader.loadOBJModel("/models/bunny.obj");
 		model.setTexture(new Texture(objectLoader.loadTexture("textures/grassBlock.png")), 1f);
 		
-		entity = new Entity(model, new Vector3f(0,0,-5), new Vector3f(0,0,0), SCALE);
+		entity = new Entity(model, new Vector3f(0,0,-3), new Vector3f(0,0,0), SCALE);
 
 		//point light
 		float lightIntensity = 1.0f;
-		Vector3f lightPosition = new Vector3f(0,0,-3.2f);
+		Vector3f lightPosition = new Vector3f(-0.5f, -0.5f,-3.2f);
 		Vector3f lightColor = new Vector3f(1,1,1);
-		pointLight = new PointLight(lightColor, lightPosition, lightIntensity, 0, 0, 1);
+		PointLight pointLight = new PointLight(lightColor, lightPosition, lightIntensity, 0, 0, 1);
 		
 		//spot light
-		Vector3f coneDir = new Vector3f(0,0,1);
+		Vector3f conedir = new Vector3f(0,0,1);
 		float cutoff = (float) Math.cos(Math.toRadians(180));
-		spotLight = new SpotLight(new PointLight(lightColor, new Vector3f(0,0,1f), lightIntensity, 0, 0, 1), coneDir, cutoff);
+		SpotLight spotLight = new SpotLight(new PointLight(lightColor, new Vector3f(0,0,1f), lightIntensity, 0, 0, 1), conedir, cutoff);
+		SpotLight spotLight1 = new SpotLight(new PointLight(lightColor, lightPosition, lightIntensity, 0, 0, 1), conedir, cutoff);
+		spotLight1.getPointLight().setPosition(new Vector3f(0.5f, 0.5f, -3.6f));
 		
 		//directional light
 		lightPosition = new Vector3f(-1,-10,0);
 		lightColor = new Vector3f(1,1,1);
 		directionalLight = new DirectionalLight(lightColor, lightPosition, lightIntensity);		
+	
+		pointLights = new PointLight[] {pointLight};
+		spotLights = new SpotLight[] {spotLight, spotLight1};
 	}
 
 	@Override
@@ -110,20 +116,16 @@ public class TestGame implements GameLogic {
 		
 		//testing point light
 		if(window.isKeyPressed(GLFW.GLFW_KEY_O))
-			pointLight.getPosition().x -= 0.1f;
+			pointLights[0].getPosition().x -= 0.1f;
 		if(window.isKeyPressed(GLFW.GLFW_KEY_P))
-			pointLight.getPosition().x += 0.1f;
-		if(window.isKeyPressed(GLFW.GLFW_KEY_K))
-			pointLight.getPosition().y -= 0.1f;
-		if(window.isKeyPressed(GLFW.GLFW_KEY_L))
-			pointLight.getPosition().y += 0.1f;
+			pointLights[0].getPosition().x += 0.1f;
 		
 		//testing spot light
-		float lightPos = spotLight.getPointLight().getPosition().z;
+		float lightPos = spotLights[0].getPointLight().getPosition().z;
 		if(window.isKeyPressed(GLFW.GLFW_KEY_N))
-			spotLight.getPointLight().getPosition().z = lightPos - 0.1f;
+			spotLights[0].getPointLight().getPosition().z = lightPos - 0.1f;
 		if(window.isKeyPressed(GLFW.GLFW_KEY_M))
-			spotLight.getPointLight().getPosition().z = lightPos + 0.1f;
+			spotLights[0].getPointLight().getPosition().z = lightPos + 0.1f;
 		
 		//entity.incrementRotation(0.0f, 0.25f, 0.0f);
 		
@@ -152,13 +154,8 @@ public class TestGame implements GameLogic {
 	}
 	
 	@Override
-	public void render() {
-		if(window.isResize()) {
-			GL11.glViewport(0, 0, window.getWidth(), window.getHeight());
-			window.setResize(true);
-		}
-		
-		renderer.render(entity, camera, directionalLight, pointLight, spotLight);
+	public void render() {	
+		renderer.render(entity, camera, directionalLight, pointLights, spotLights);
 	}
 
 	@Override
