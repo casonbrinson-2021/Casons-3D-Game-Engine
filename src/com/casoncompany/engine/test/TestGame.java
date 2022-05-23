@@ -16,6 +16,10 @@ import com.casoncompany.engine.lighting.SpotLight;
 import com.casoncompany.engine.renderer.GameLogic;
 import com.casoncompany.engine.renderer.Renderer;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.joml.Random;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -30,7 +34,7 @@ public class TestGame implements GameLogic {
 	private final InputController inputController;
 	private final ObjectLoader objectLoader;
 	
-	private Entity entity;
+	private List<Entity> entities;
 	private Camera camera;
 	
 	private Vector3f cameraInc;
@@ -59,11 +63,18 @@ public class TestGame implements GameLogic {
 		renderer.init();
 		inputController.init();
 		
-		Model model;
-		model = objectLoader.loadOBJModel("/models/bunny.obj");
+		Model model = objectLoader.loadOBJModel("/models/bunny.obj");
 		model.setTexture(new Texture(objectLoader.loadTexture("textures/grassBlock.png")), 1f);
 		
-		entity = new Entity(model, new Vector3f(0,0,-3), new Vector3f(0,0,0), SCALE);
+		entities = new ArrayList<Entity>();
+		Random rand = new Random();
+		for(int i = 0; i < 200; i++) {
+			float x = rand.nextFloat()*100 - 50;
+			float y = rand.nextFloat()*100 - 50;
+			float z = rand.nextFloat()*-200;
+			entities.add(new Entity(model, new Vector3f(x,y,z), new Vector3f(rand.nextFloat()*180, rand.nextFloat()*180, 0), SCALE));
+		}
+		entities.add(new Entity(model, new Vector3f(0,0,-2f), new Vector3f(0,0,0), SCALE));
 
 		//point light
 		float lightIntensity = 1.0f;
@@ -151,11 +162,15 @@ public class TestGame implements GameLogic {
 		double angRad = Math.toRadians(lightAngle);
 		directionalLight.getDirection().x = (float) Math.sin(angRad);
 		directionalLight.getDirection().y = (float) Math.cos(angRad);
+		
+		for(Entity entity : entities) {
+			renderer.processEntities(entity);
+		}
 	}
 	
 	@Override
 	public void render() {	
-		renderer.render(entity, camera, directionalLight, pointLights, spotLights);
+		renderer.render(camera, directionalLight, pointLights, spotLights);
 	}
 
 	@Override
