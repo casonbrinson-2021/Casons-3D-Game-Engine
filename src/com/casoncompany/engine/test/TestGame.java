@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 import com.casoncompany.engine.Camera;
 import com.casoncompany.engine.Window;
 import com.casoncompany.engine.entity.Entity;
+import com.casoncompany.engine.entity.Material;
 import com.casoncompany.engine.entity.Model;
 import com.casoncompany.engine.entity.ObjectLoader;
 import com.casoncompany.engine.entity.Texture;
@@ -15,6 +16,7 @@ import com.casoncompany.engine.lighting.PointLight;
 import com.casoncompany.engine.lighting.SpotLight;
 import com.casoncompany.engine.renderer.GameLogic;
 import com.casoncompany.engine.renderer.Renderer;
+import com.casoncompany.engine.renderer.Terrain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,7 @@ public class TestGame implements GameLogic {
 	private final ObjectLoader objectLoader;
 	
 	private List<Entity> entities;
+	private List<Terrain> terrains;
 	private Camera camera;
 	
 	private Vector3f cameraInc;
@@ -65,6 +68,12 @@ public class TestGame implements GameLogic {
 		
 		Model model = objectLoader.loadOBJModel("/models/bunny.obj");
 		model.setTexture(new Texture(objectLoader.loadTexture("textures/grassBlock.png")), 1f);
+		
+		terrains = new ArrayList<>();
+		Terrain terrain = new Terrain(new Vector3f(0,-1,-800), objectLoader, new Material(new Texture(objectLoader.loadTexture("textures/terrain.png")), 0.1f));
+		Terrain terrain2 = new Terrain(new Vector3f(-800,-1,-800), objectLoader, new Material(new Texture(objectLoader.loadTexture("textures/flowers.png")), 0.1f));
+		terrains.add(terrain);
+		terrains.add(terrain2);
 		
 		entities = new ArrayList<Entity>();
 		Random rand = new Random();
@@ -165,6 +174,10 @@ public class TestGame implements GameLogic {
 		
 		for(Entity entity : entities) {
 			renderer.processEntities(entity);
+		}
+		
+		for(Terrain terrain : terrains) {
+			renderer.processTerrain(terrain);
 		}
 	}
 	

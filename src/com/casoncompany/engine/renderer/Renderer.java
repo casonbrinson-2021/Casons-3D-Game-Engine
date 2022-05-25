@@ -29,6 +29,7 @@ public class Renderer {
 	
 	private final Window window;
 	private EntityRenderer entityRenderer;
+	private TerrainRenderer terrainRenderer;
 			
 	public Renderer(Window window) {
 		this.window = window;
@@ -36,7 +37,10 @@ public class Renderer {
 	
 	public void init() throws Exception {
 		entityRenderer = new EntityRenderer(window);
+		terrainRenderer = new TerrainRenderer(window);
 		entityRenderer.init();
+		terrainRenderer.init();
+		
 	}
 	
 	public void update() {
@@ -66,6 +70,7 @@ public class Renderer {
 		}
 		
 		entityRenderer.render(camera, pointLights, spotLights, directionalLight);
+		terrainRenderer.render(camera, pointLights, spotLights, directionalLight);
 		
 	}
 	
@@ -81,6 +86,10 @@ public class Renderer {
 		}
 	}
 	
+	public void processTerrain(Terrain terrain) {
+		terrainRenderer.getTerrain().add(terrain);
+	}
+	
 	public void clear() {
 		window.setClearColor(0.0f,  0.0f, 0.0f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -88,6 +97,7 @@ public class Renderer {
 	
 	public void cleanup() {
 		entityRenderer.cleanup();
+		terrainRenderer.cleanup();
 	}
 
 }

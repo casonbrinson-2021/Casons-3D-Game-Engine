@@ -34,6 +34,10 @@ public class Material {
 		this(DEFAULT_COLOR, DEFAULT_COLOR, DEFAULT_COLOR, 0, texture);
 	}
 	
+	public Material(Texture texture, float reflectance) {
+		this(DEFAULT_COLOR, DEFAULT_COLOR, DEFAULT_COLOR, reflectance, texture);
+	}
+	
 	public Material(Vector4f ambientColor, Vector4f diffuseColor, Vector4f specularColor, float reflectance, Texture texture) {
 		this.setAmbientColor(ambientColor);
 		this.setDiffuseColor(diffuseColor);
