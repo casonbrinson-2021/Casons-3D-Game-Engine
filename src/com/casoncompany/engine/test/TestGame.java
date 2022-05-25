@@ -71,9 +71,9 @@ public class TestGame implements GameLogic {
 		
 		terrains = new ArrayList<>();
 		Terrain terrain = new Terrain(new Vector3f(0,-1,-800), objectLoader, new Material(new Texture(objectLoader.loadTexture("textures/terrain.png")), 0.1f));
-		Terrain terrain2 = new Terrain(new Vector3f(-800,-1,-800), objectLoader, new Material(new Texture(objectLoader.loadTexture("textures/flowers.png")), 0.1f));
+		//Terrain terrain2 = new Terrain(new Vector3f(-800,-1,-800), objectLoader, new Material(new Texture(objectLoader.loadTexture("textures/flowers.png")), 0.1f));
 		terrains.add(terrain);
-		terrains.add(terrain2);
+		//terrains.add(terrain2);
 		
 		entities = new ArrayList<Entity>();
 		Random rand = new Random();
@@ -151,26 +151,26 @@ public class TestGame implements GameLogic {
 		
 		
 		//random day night cycle using directional light
-		lightAngle+=1.05f;
-		if(lightAngle > 90) {
-			directionalLight.setIntensity(0);
-			
-			if(lightAngle >= 360)
-				lightAngle = -90;
-		} else if(lightAngle <= -80 || lightAngle >= 80) {
-			float factor = 1 - (Math.abs(lightAngle) - 80) / 10.0f;
-			directionalLight.setIntensity(factor);
-			directionalLight.getColor().y = Math.max(factor, 0.9f);
-			directionalLight.getColor().z = Math.max(factor, 0.5f);
-		} else {
-			directionalLight.setIntensity(1);
-			directionalLight.getColor().x = 1;
-			directionalLight.getColor().y = 1;
-			directionalLight.getColor().z = 1;
-		}
-		double angRad = Math.toRadians(lightAngle);
-		directionalLight.getDirection().x = (float) Math.sin(angRad);
-		directionalLight.getDirection().y = (float) Math.cos(angRad);
+//		lightAngle+=1.05f;
+//		if(lightAngle > 90) {
+//			directionalLight.setIntensity(0);
+//			
+//			if(lightAngle >= 360)
+//				lightAngle = -90;
+//		} else if(lightAngle <= -80 || lightAngle >= 80) {
+//			float factor = 1 - (Math.abs(lightAngle) - 80) / 10.0f;
+//			directionalLight.setIntensity(factor);
+//			directionalLight.getColor().y = Math.max(factor, 0.9f);
+//			directionalLight.getColor().z = Math.max(factor, 0.5f);
+//		} else {
+//			directionalLight.setIntensity(1);
+//			directionalLight.getColor().x = 1;
+//			directionalLight.getColor().y = 1;
+//			directionalLight.getColor().z = 1;
+//		}
+//		double angRad = Math.toRadians(lightAngle);
+//		directionalLight.getDirection().x = (float) Math.sin(angRad);
+//		directionalLight.getDirection().y = (float) Math.cos(angRad);
 		
 		for(Entity entity : entities) {
 			renderer.processEntities(entity);
