@@ -68,7 +68,7 @@ public class TestGame implements GameLogic {
 		
 		entities = new ArrayList<Entity>();
 		Random rand = new Random();
-		for(int i = 0; i < 200; i++) {
+		for(int i = 0; i < 100; i++) {
 			float x = rand.nextFloat()*100 - 50;
 			float y = rand.nextFloat()*100 - 50;
 			float z = rand.nextFloat()*-200;
