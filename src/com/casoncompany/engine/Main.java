@@ -77,12 +77,13 @@ public class Main implements Runnable {
 	
 	public void render() {
 		gameLogic.render();
-		window.update();
+		window.render();
 	}
 	
 	//updates the state of things in the game at a consistent rate of UPDATES_PER_SECOND
 	public void update() {
 		gameLogic.update();
+		window.update();
 	}
 	
 	public void loop() {

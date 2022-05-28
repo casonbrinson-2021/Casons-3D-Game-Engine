@@ -86,8 +86,11 @@ public class Window {
 	}
 	
 	public void update() {
-		GLFW.glfwSwapBuffers(window);
 		GLFW.glfwPollEvents();
+	}
+	
+	public void render() {
+		GLFW.glfwSwapBuffers(window);
 	}
 	
 	public void cleanup() {	

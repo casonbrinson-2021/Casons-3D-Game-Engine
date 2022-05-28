@@ -38,7 +38,12 @@ struct SpotLight {
 	float cutoff;
 };
 
-uniform sampler2D textureSampler;
+uniform sampler2D backgroundTexture;
+uniform sampler2D redTexture;
+uniform sampler2D greenTexture;
+uniform sampler2D blueTexture;
+uniform sampler2D blendMap;
+
 uniform vec3 ambientLight;
 uniform Material material;
 uniform float specularPower;
@@ -51,8 +56,17 @@ vec4 diffuseC;
 vec4 specularC;
 
 void setupColors(Material material, vec2 textureCoord) {
-	if(material.hasTexture == 1) { 
-		ambientC = texture(textureSampler, textureCoord);
+	if(material.hasTexture == 0) { 
+	
+		vec4 blendMapColor = texture(blendMap, textureCoord);
+		float backgroundTextureAmount = 1 - (blendMapColor.r, blendMapColor.g, blendMapColor.b);
+		vec2 tiledCoords = textureCoord / 2.5f;
+		vec4 backgroundTextureColor = texture(backgroundTexture, tiledCoords) * backgroundTextureAmount;
+		vec4 redTextureColor = texture(redTexture, tiledCoords) * blendMapColor.r;
+		vec4 greenTextureColor = texture(greenTexture, tiledCoords) * blendMapColor.g;
+		vec4 blueTextureColor = texture(blueTexture, tiledCoords) * blendMapColor.b;
+	
+		ambientC = backgroundTextureColor + redTextureColor + greenTextureColor + blueTextureColor;
 		diffuseC = ambientC;
 		specularC = ambientC;
 	} else {

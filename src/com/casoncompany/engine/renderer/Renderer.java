@@ -16,6 +16,7 @@ import com.casoncompany.engine.Camera;
 import com.casoncompany.engine.Window;
 import com.casoncompany.engine.entity.Entity;
 import com.casoncompany.engine.entity.Model;
+import com.casoncompany.engine.entity.SceneManager;
 import com.casoncompany.engine.lighting.DirectionalLight;
 import com.casoncompany.engine.lighting.PointLight;
 import com.casoncompany.engine.lighting.SpotLight;
@@ -61,7 +62,7 @@ public class Renderer {
 		shader.setUniform("directionalLight", directionalLight);
 	}
 	
-	public void render(Camera camera, DirectionalLight directionalLight, PointLight[] pointLights, SpotLight[] spotLights) {
+	public void render(Camera camera, SceneManager sceneManager) {
 		clear();
 		
 		if(window.isResize()) {
@@ -69,8 +70,8 @@ public class Renderer {
 			window.setResize(true);
 		}
 		
-		entityRenderer.render(camera, pointLights, spotLights, directionalLight);
-		terrainRenderer.render(camera, pointLights, spotLights, directionalLight);
+		entityRenderer.render(camera, sceneManager.getPointLights(), sceneManager.getSpotLights(), sceneManager.getDirectionalLight());
+		terrainRenderer.render(camera, sceneManager.getPointLights(), sceneManager.getSpotLights(), sceneManager.getDirectionalLight());
 		
 	}
 	
