@@ -31,6 +31,8 @@ public class Renderer {
 	private final Window window;
 	private EntityRenderer entityRenderer;
 	private TerrainRenderer terrainRenderer;
+	
+	private static boolean isCulling = false;
 			
 	public Renderer(Window window) {
 		this.window = window;
@@ -72,6 +74,22 @@ public class Renderer {
 		
 		entityRenderer.render(camera, sceneManager.getPointLights(), sceneManager.getSpotLights(), sceneManager.getDirectionalLight());
 		terrainRenderer.render(camera, sceneManager.getPointLights(), sceneManager.getSpotLights(), sceneManager.getDirectionalLight());
+		
+	}
+	
+	public static void enableCulling() {
+		if(isCulling)return;
+		
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glCullFace(GL11.GL_BACK);
+		isCulling = true;
+	}
+	
+	public static void disableCulling() {
+		if(!isCulling)return;
+		
+		GL11.glDisable(GL11.GL_CULL_FACE);
+		isCulling = false;
 		
 	}
 	

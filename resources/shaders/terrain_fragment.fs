@@ -59,8 +59,8 @@ void setupColors(Material material, vec2 textureCoord) {
 	if(material.hasTexture == 0) { 
 	
 		vec4 blendMapColor = texture(blendMap, textureCoord);
-		float backgroundTextureAmount = 1 - (blendMapColor.r, blendMapColor.g, blendMapColor.b);
-		vec2 tiledCoords = textureCoord / 2.5f;
+		float backgroundTextureAmount = 1 - (blendMapColor.r + blendMapColor.g + blendMapColor.b);
+		vec2 tiledCoords = textureCoord * 80;
 		vec4 backgroundTextureColor = texture(backgroundTexture, tiledCoords) * backgroundTextureAmount;
 		vec4 redTextureColor = texture(redTexture, tiledCoords) * blendMapColor.r;
 		vec4 greenTextureColor = texture(greenTexture, tiledCoords) * blendMapColor.g;

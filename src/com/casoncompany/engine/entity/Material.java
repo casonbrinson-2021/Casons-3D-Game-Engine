@@ -11,8 +11,9 @@ public class Material {
 	private Vector4f specularColor;
 	
 	private float reflectance;
-	
 	private Texture texture;
+	
+	private boolean disableCulling;
 	
 	public Material() {
 		this.setAmbientColor(DEFAULT_COLOR);
@@ -20,6 +21,7 @@ public class Material {
 		this.setSpecularColor(DEFAULT_COLOR);
 		this.setTexture(null);
 		this.setReflectance(0);
+		this.setDisableCulling(false);
 	}
 	
 	public Material(Vector4f color, float reflectance) {
@@ -89,5 +91,14 @@ public class Material {
 	public boolean hasTexture() {
 		return texture != null;
 	}
+
+	public boolean getDisableCulling() {
+		return disableCulling;
+	}
+
+	public void setDisableCulling(boolean disableCulling) {
+		this.disableCulling = disableCulling;
+	}
+
 
 }

@@ -31,7 +31,7 @@ import org.joml.Vector4f;
 
 public class TestGame implements GameLogic {
 	
-	private static final float CAMERA_MOVE_SPEED = 0.05f;
+	private static final float CAMERA_MOVE_SPEED = 0.5f;
 	private static final float MOUSE_SENSITIVITY = 0.05f;
 	private static final float SCALE = 10.0f;
 	
@@ -63,6 +63,7 @@ public class TestGame implements GameLogic {
 		
 		Model model = objectLoader.loadOBJModel("/models/bunny.obj");
 		model.setTexture(new Texture(objectLoader.loadTexture("textures/grassBlock.png")), 1f);
+		model.getMaterial().setDisableCulling(true);
 		
 		TerrainTexture backgroundTexture = new TerrainTexture(objectLoader.loadTexture("textures/terrain.png"));
 		TerrainTexture redTexture = new TerrainTexture(objectLoader.loadTexture("textures/dirt.png"));
